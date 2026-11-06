@@ -34,14 +34,13 @@ Wayfarer is a trip-planning application designed to help users manage their trav
 - OpenWeatherMap API
 
 ## Team Members
-| Name | Role |
-|------|------|
-| Suryansh Saroch | Backend / Cloud Lead |
-| Christopher Kiige | Frontend / Navigation Lead |
-| Brandan Stradling | Maps & Geolocation Lead |
-| Christopher McFadden | Local Storage / Notifications Lead |
-| Justin See | UI/UX & QA Lead |
-| Charis Chan | Testing / Documentation Lead |
+| ID | Name | Role |
+|------|------|------|
+|  | Suryansh Saroch | Backend / Cloud Lead |
+|  | Christopher Kiige | Frontend / Navigation Lead |
+| 100915823 | Brandan Stradling | Maps & Geolocation Lead |
+|  | Justin See | UI/UX & QA Lead |
+|  | Charis Chan | Testing / Documentation Lead |
 
 ## How to run (Part 2 check-in build)
 1. Install Flutter (stable, 3.35 or newer) and start an Android emulator or plug in a phone.
