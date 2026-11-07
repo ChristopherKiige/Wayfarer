@@ -171,11 +171,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     if (_weather != null) {
       final double temp = unit == TempUnit.celsius ? _weather!.celsius : _weather!.fahrenheit;
       weather = Row(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Icon(_weather!.icon, size: 16, color: Colors.orange),
           const SizedBox(width: 4),
-          Text(
-            '${temp.round()}°${unit == TempUnit.celsius ? 'C' : 'F'} · ${_weather!.description}',
+          Flexible(
+            child: Text(
+              '${temp.round()}°${unit == TempUnit.celsius ? 'C' : 'F'} · ${_weather!.description}',
+            ),
           ),
         ],
       );
@@ -193,14 +196,25 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       );
     }
 
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: Row(
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 4,
         children: <Widget>[
-          Icon(Icons.place, size: 16, color: scheme.primary),
-          const SizedBox(width: 4),
-          const Text('Near $homeLabel', style: TextStyle(fontWeight: FontWeight.w600)),
-          const Spacer(),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(Icons.place, size: 16, color: scheme.primary),
+              const SizedBox(width: 4),
+              const Flexible(
+                child: Text('Near $homeLabel', style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            ],
+          ),
           weather,
         ],
       ),
