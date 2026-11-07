@@ -36,11 +36,11 @@ Wayfarer is a trip-planning application designed to help users manage their trav
 ## Team Members
 | ID | Name | Role |
 |------|------|------|
-|  | Suryansh Saroch | Backend / Cloud Lead |
-|  | Christopher Kiige | Frontend / Navigation Lead |
+| 100869700 | Suryansh Saroch | Backend / Cloud Lead |
+| 100918296 | Christopher Kiige | Frontend / Navigation Lead |
 | 100915823 | Brandan Stradling | Maps & Geolocation Lead |
-|  | Justin See | UI/UX & QA Lead |
-|  | Charis Chan | Testing / Documentation Lead |
+| 100865485 | Justin See | UI/UX & QA Lead |
+| 100876550 | Charis Chan | Testing / Documentation Lead |
 
 ## How to run (Part 2 check-in build)
 1. Install Flutter (stable, 3.35 or newer) and start an Android emulator or plug in a phone.
