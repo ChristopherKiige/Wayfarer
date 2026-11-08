@@ -99,11 +99,18 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.thermostat),
-            title: const Text('Show temperature in °F'),
-            value: s.tempUnit == TempUnit.fahrenheit,
-            onChanged: (bool f) => s.tempUnit = f ? TempUnit.fahrenheit : TempUnit.celsius,
+          const ListTile(leading: Icon(Icons.thermostat), title: Text('Temperature')),
+          RadioGroup<TempUnit>(
+            groupValue: s.tempUnit,
+            onChanged: (TempUnit? v) {
+              if (v != null) s.tempUnit = v;
+            },
+            child: const Column(
+              children: <Widget>[
+                RadioListTile<TempUnit>(value: TempUnit.celsius, title: Text('Celsius (°C)')),
+                RadioListTile<TempUnit>(value: TempUnit.fahrenheit, title: Text('Fahrenheit (°F)')),
+              ],
+            ),
           ),
 
           section('Account'),
@@ -119,9 +126,8 @@ class SettingsScreen extends StatelessWidget {
             child: TextButton.icon(
               onPressed: () {
                 s.reset();
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Settings reset to defaults')));
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('Settings reset to defaults')));
               },
               icon: const Icon(Icons.restart_alt),
               label: const Text('Reset settings'),

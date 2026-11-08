@@ -137,30 +137,34 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         icon: const Icon(Icons.add),
         label: const Text('New trip'),
       ),
-      body: Column(
-        children: <Widget>[
-          _buildLocationRow(app.settings.tempUnit),
-          _buildSearchBar(),
-          _buildCategoryChips(),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _loadWeather,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-                children: <Widget>[
-                  if (!filtering) _NextTripBanner(store: app),
-                  if (places.isEmpty)
-                    const EmptyState(
-                      icon: Icons.search_off,
-                      title: 'No outings match',
-                      message: 'Try a different search or category.',
-                    ),
-                  for (final Place place in places) PlaceCard(place: place),
-                ],
+      body: RefreshIndicator(
+        onRefresh: _loadWeather,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 96),
+          children: <Widget>[
+            _buildLocationRow(app.settings.tempUnit),
+            _buildSearchBar(),
+            _buildCategoryChips(),
+            const SizedBox(height: 4),
+            if (!filtering)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _NextTripBanner(store: app),
               ),
-            ),
-          ),
-        ],
+            if (places.isEmpty)
+              const EmptyState(
+                icon: Icons.search_off,
+                title: 'No outings match',
+                message: 'Try a different search or category.',
+              ),
+            for (final Place place in places)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: PlaceCard(place: place),
+              ),
+          ],
+        ),
       ),
     );
   }
