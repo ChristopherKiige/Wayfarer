@@ -64,9 +64,11 @@ class NotificationService {
       iOS: DarwinNotificationDetails(),
     );
 
-    // final scheduledTzDateTime = tz.TZDateTime.from(scheduledDate, tz.local);
-    final testDate = DateTime.now().add(const Duration(seconds: 10));
-    final scheduledTzDateTime = tz.TZDateTime.from(testDate, tz.local);
+    final scheduledTzDateTime = tz.TZDateTime.from(scheduledDate, tz.local);
+
+    // comment the line above and uncomment the 2 lines below this to test notifications (sets it to send the notifications in 10 seconds)
+    // final testDate = DateTime.now().add(const Duration(seconds: 10));
+    // final scheduledTzDateTime = tz.TZDateTime.from(testDate, tz.local);
 
     // Only schedule if the time is in the future
     if (scheduledTzDateTime.isAfter(tz.TZDateTime.now(tz.local))) {
