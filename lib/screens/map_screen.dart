@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../data/sample_data.dart';
 import '../models/place.dart';
@@ -30,6 +31,8 @@ class _MapScreenState extends State<MapScreen> {
   final MapController _controller = MapController();
   String? _tripId;
   bool _mapReady = false;
+  LatLng? _currentPosition;
+  bool _isLoadingLocation = false;
 
   @override
   void initState() {
@@ -123,6 +126,74 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  Future<void> _goToCurrentLocation() async {
+    setState(() {
+      _isLoadingLocation = true;
+    });
+
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location services are disabled.')),
+          );
+        }
+        return;
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location permission denied.')),
+            );
+          }
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Location permission is permanently denied in settings.'),
+            ),
+          );
+        }
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+
+      final userLatLng = LatLng(position.latitude, position.longitude);
+
+      setState(() {
+        _currentPosition = userLatLng;
+      });
+
+      _controller.move(userLatLng, 15.0);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error getting location: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingLocation = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppState app = AppScope.of(context);
@@ -132,12 +203,12 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       drawer: openedFromTrip ? null : const AppDrawer(),
       appBar: AppBar(title: const Text('Map')),
-      floatingActionButton: FloatingActionButton.small(
-        heroTag: 'map-fab',
-        tooltip: 'Fit all pins',
-        onPressed: () => _fitTo(_pins(app)),
-        child: const Icon(Icons.center_focus_strong),
-      ),
+      // floatingActionButton: FloatingActionButton.small(
+      //   heroTag: 'map-fab',
+      //   tooltip: 'Fit all pins',
+      //   onPressed: () => _fitTo(_pins(app)),
+      //   child: const Icon(Icons.center_focus_strong),
+      // ),
       body: ListenableBuilder(
         listenable: app.trips,
         builder: (BuildContext context, Widget? _) {
@@ -170,6 +241,21 @@ class _MapScreenState extends State<MapScreen> {
                       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.wayfarer.wayfarer',
                     ),
+                    if (_currentPosition != null)
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: _currentPosition!,
+                            width: 40,
+                            height: 40,
+                            child: const Icon(
+                              Icons.my_location,
+                              color: Colors.blue,
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      ),
                     if (trip != null && pins.length > 1)
                       PolylineLayer<Object>(
                         polylines: <Polyline<Object>>[
@@ -200,9 +286,43 @@ class _MapScreenState extends State<MapScreen> {
                       ],
                     ),
                     const RichAttributionWidget(
+                      alignment: AttributionAlignment.bottomLeft,
                       attributions: <SourceAttribution>[
                         TextSourceAttribution('OpenStreetMap contributors'),
                       ],
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 16,
+                bottom: MediaQuery.of(context).padding.bottom + 16,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FloatingActionButton.small(
+                      heroTag: 'map-location-fab',
+                      onPressed: _isLoadingLocation ? null : _goToCurrentLocation,
+                      tooltip: 'My Location',
+                      child: _isLoadingLocation
+                          ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.0,
+                        ),
+                      )
+                          : const Icon(Icons.my_location),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    FloatingActionButton.small(
+                      heroTag: 'map-fit-fab',
+                      tooltip: 'Fit all pins',
+                      onPressed: () => _fitTo(_pins(app)),
+                      child: const Icon(Icons.center_focus_strong),
                     ),
                   ],
                 ),
