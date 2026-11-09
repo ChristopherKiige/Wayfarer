@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'screens/home_shell.dart';
 import 'state/app_state.dart';
 import 'theme.dart';
+import 'services/notification_service.dart';
 
 Future<void> main() async {
   // Needed before reading local storage in AppState.load().
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.instance.init();
   final AppState state = await AppState.load();
   runApp(WayfarerApp(state: state));
 }

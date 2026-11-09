@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/sample_data.dart';
 import '../models/trip.dart';
+import '../services/notification_service.dart';
 
 /// Owns the user's trips and saved places, and writes them to local
 /// storage (shared_preferences, as JSON) after every change.
@@ -61,29 +62,50 @@ class TripStore extends ChangeNotifier {
 
   // ---- Trips ----
 
-  void addTrip(Trip trip) {
+  void addTrip(Trip trip) async {
     _trips.add(trip);
     _changed();
+
+    if (trip.reminder) {
+      await NotificationService.instance.requestPermissions();
+      await NotificationService.instance.scheduleTripReminder(
+        id: trip.id.hashCode,
+        tripTitle: trip.name,
+        scheduledDate: trip.startDate.subtract(const Duration(days: 1)),
+      );
+    }
   }
 
-  void updateTrip(Trip trip) {
+  void updateTrip(Trip trip) async {
     final int i = _trips.indexWhere((Trip t) => t.id == trip.id);
     if (i == -1) return;
-    // If the dates shrank, drop stops that now fall outside the trip.
     final List<TripStop> kept = trip.stops
         .where(
           (TripStop s) =>
-              !dateOnly(s.date).isBefore(dateOnly(trip.startDate)) &&
-              !dateOnly(s.date).isAfter(dateOnly(trip.endDate)),
-        )
+      !dateOnly(s.date).isBefore(dateOnly(trip.startDate)) &&
+          !dateOnly(s.date).isAfter(dateOnly(trip.endDate)),
+    )
         .toList();
-    _trips[i] = trip.copyWith(stops: kept);
+    final updatedTrip = trip.copyWith(stops: kept);
+    _trips[i] = updatedTrip;
     _changed();
+
+    if (updatedTrip.reminder) {
+      await NotificationService.instance.requestPermissions();
+      await NotificationService.instance.scheduleTripReminder(
+        id: updatedTrip.id.hashCode,
+        tripTitle: updatedTrip.name,
+        scheduledDate: updatedTrip.startDate.subtract(const Duration(days: 1)),
+      );
+    } else {
+      await NotificationService.instance.cancelReminder(updatedTrip.id.hashCode);
+    }
   }
 
-  void removeTrip(String id) {
+  void removeTrip(String id) async {
     _trips.removeWhere((Trip t) => t.id == id);
     _changed();
+    await NotificationService.instance.cancelReminder(id.hashCode);
   }
 
   // ---- Stops ----

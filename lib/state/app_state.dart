@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/weather_service.dart';
+import '../services/notification_service.dart';
 import 'settings_controller.dart';
 import 'trip_store.dart';
 

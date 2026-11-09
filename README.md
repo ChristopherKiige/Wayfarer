@@ -53,6 +53,18 @@ Wayfarer is a trip-planning application designed to help users manage their trav
 
 **Test account:** none needed. There is no login yet; the app opens straight into Discover with sample trips loaded. To get back to the demo data at any time: Profile → *Reset sample data*.
 
+### Testing Trip Notifications
+
+1. Create or edit a trip, ensure **"Remind me the day before"** is toggled **ON**, and tap **SAVE**. Grant notification permissions when prompted by Android.
+2. **Immediate Test (10-Second Override):**
+   * Open `lib/services/notification_service.dart` and temporarily replace the `scheduledDate` line in `scheduleTripReminder`:
+     ```dart
+     final testDate = DateTime.now().add(const Duration(seconds: 10));
+     final scheduledTzDateTime = tz.TZDateTime.from(testDate, tz.local);
+     ```
+   * Perform a Hot Restart (`R` in terminal), save a trip, and immediately press the Home button to minimize the app.
+   * A notification banner reading *"Upcoming Trip: [Trip Name]"* will trigger after 10 seconds. Revert the test line when finished.
+
 ## Project structure
 ```
 lib/
