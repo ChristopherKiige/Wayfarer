@@ -35,12 +35,12 @@ Wayfarer is a trip-planning application designed to help users manage their trav
 
 ## Team Members
 | ID | Name | Role |
-|------|------|------|
+|----|------|------|
 | 100869700 | Suryansh Saroch | Backend / Cloud Lead |
 | 100918296 | Christopher Kiige | Frontend / Navigation Lead |
-| 100915823 | Brandan Stradling | Maps & Geolocation Lead |
+| 100915823 | Brandan Stradling | Testing / Documentation Lead |
 | 100865485 | Justin See | UI/UX & QA Lead |
-| 100876550 | Charis Chan | Testing / Documentation Lead |
+| 100876550 | Charis Chan | Maps & Geolocation Lead |
 
 ## How to run (Part 2 check-in build)
 1. Install Flutter (stable, 3.35 or newer) and start an Android emulator or plug in a phone.
@@ -85,4 +85,9 @@ lib/
 - Local storage with `shared_preferences`.
 
 ## Generative AI use
-
+| Date | AI Tool | Description of Use |
+|------|---------|--------------------|
+| Oct 10, 2026 | Claude | Discussed how to structure and build the Discover/Home screen based on the provided wireframe.  |
+| Oct 31, 2026 | Claude | Asked for help understanding a Flutter device connection error and the related ADB output.  |
+| Oct 31, 2026 | Claude | Clarified the expected scope of the midterm application and whether the current implementation was too complete for a progress check-in.  |
+| Nov 7, 2026 | Gemini | Asked for clarification on using geolocator as well as methods to implement |
