@@ -91,3 +91,5 @@ lib/
 | Oct 31, 2026 | Claude | Asked for help understanding a Flutter device connection error and the related ADB output.  |
 | Oct 31, 2026 | Claude | Clarified the expected scope of the midterm application and whether the current implementation was too complete for a progress check-in.  |
 | Nov 7, 2026 | Gemini | Asked for clarification on using geolocator as well as methods to implement |
+| Nov 8, 2026 | Gemini | Asked for clarification on notifications and implementations of it |
+
