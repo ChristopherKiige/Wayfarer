@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'screens/home_shell.dart';
 import 'state/app_state.dart';
 import 'theme.dart';
+import 'firebase_test_screen.dart';
 import 'services/notification_service.dart';
 
 Future<void> main() async {
   // Needed before reading local storage in AppState.load().
   WidgetsFlutterBinding.ensureInitialized();
+
+	await Firebase.initializeApp(
+		options: DefaultFirebaseOptions.currentPlatform,
+	);
+
   await NotificationService.instance.init();
+
   final AppState state = await AppState.load();
+  
   runApp(WayfarerApp(state: state));
+  //runApp(const MaterialApp(home: FirebaseTestScreen(),));
 }
 
 class WayfarerApp extends StatelessWidget {
